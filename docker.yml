@@ -1,0 +1,58 @@
+---
+- name: Docker Container with Ansible
+  hosts: localhost
+  remote_user: vagrant
+  become: yes
+  tasks:
+    - name: Install yum utils
+      yum:
+        name: yum-utils
+        state: latest
+
+    - name: Install device-mapper-persistent-data
+      yum:
+        name: device-mapper-persistent-data
+        state: latest
+
+    - name: Install lvm2
+      yum:
+        name: lvm2
+        state: latest
+
+    - name: Add Docker repo
+      get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/docer-ce.repo
+      become: yes
+
+    - name: Install Docker
+      package:
+        name: docker-ce
+        state: latest
+      become: yes
+
+    - name: Install pip
+      package: name=python-pip state=present
+    - name: install docker-py package
+      pip: name=docker-py
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Build Docker image from Dockerfile
+      docker_image: >
+        name=built-by-ansible
+        tag=ex1
+        path=/home/vagrant
+        state=present  
+
+    - name: run the site in a docker container
+      docker_container:
+        name: site1
+        image: "built-by-ansible:ex1"
+        state: started
+        ports: 
+          - "8080:80"
