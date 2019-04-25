@@ -76,6 +76,7 @@
 - name: Install plugins
   include: jenkins_plugins.yml
   with_items:
+      - ansible
       - sonar  
       - disk-usage
       - dashboard-view
@@ -199,9 +200,10 @@
   retries: 25
   delay: 5
 
-#- name: Build job_backend
-#  shell: "java -jar /var/cache/jenkins/war/WEB-INF/jenkins-cli.jar -s http://localhost:8080/ -auth admin:{{ adminpwd.stdout }} build job_backend"
-
-#- name: Build job_frontend
-#  shell: "java -jar /var/cache/jenkins/war/WEB-INF/jenkins-cli.jar -s http://localhost:8080/ -auth admin:{{ adminpwd.stdout }} build job_frontend"
+- name: Allow 'jenkins' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: 'jenkins ALL=(ALL) NOPASSWD: ALL'
 ...

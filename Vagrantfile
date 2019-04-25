@@ -70,8 +70,9 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  config.vm.provision "file", source: "~/Kamach/DevOps/Docker/ansible", destination: "/home/vagrant/"
+  config.vm.provision "file", source: "ansible", destination: "/home/vagrant/"
+  config.vm.provision "file", source: "templates", destination: "/home/vagrant/"
 #  config.vm.provision "file", source: "Dockerfile", destination: "/home/vagrant/"
-  config.vm.provision "shell", path: "docker.sh"
+  config.vm.provision "shell", path: "provision.sh"
   # SHELL
 end

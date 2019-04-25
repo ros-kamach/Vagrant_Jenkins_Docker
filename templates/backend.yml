@@ -1,0 +1,17 @@
+- hosts: localhost
+  become: true
+  tasks:
+    - name: Build Docker image from Dockerfile
+      docker_image: >
+        name=backend_build
+        tag=V1
+        path=/var/lib/jenkins/workspace/frontend_job/
+        state=present  
+
+    - name: run the site in a docker container
+      docker_container:
+        name: si
+        image: "backend_build:V1"
+        state: started
+        ports: 
+          - "7080:80"
